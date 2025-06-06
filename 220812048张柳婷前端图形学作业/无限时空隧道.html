@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>无限时空隧道</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
+
+    let scene, camera, renderer, tubeMesh;
+    let tubePoints = [];
+    let i = 0;
+
+    init();
+    animate();
+
+    function init() {
+      // 创建场景
+      scene = new THREE.Scene();
+
+      // 创建相机
+      camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        5000
+      );
+
+      // 创建渲染器
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // 创建路径曲线
+      const path = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-100, 20, 90),
+        new THREE.Vector3(-40, 80, 100),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(60, -60, 0),
+        new THREE.Vector3(100, -40, 80),
+        new THREE.Vector3(150, 60, 60),
+        new THREE.Vector3(200, 100, -100),
+        new THREE.Vector3(250, -50, 0),
+        new THREE.Vector3(300, 0, 200)
+      ]);
+
+      // 创建管道几何体
+      const geometry = new THREE.TubeGeometry(path, 1000, 5, 30, false);
+
+      // 加载纹理
+      const loader = new THREE.TextureLoader();
+      const texture = loader.load('./src/assets/1.jpg');
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(20, 4);
+      texture.colorSpace = THREE.SRGBColorSpace;
+
+      // 材质（基础贴图+AO贴图）
+      const material = new THREE.MeshStandardMaterial({
+        map: texture,
+        aoMap: texture,
+        side: THREE.DoubleSide
+      });
+
+      // 创建管道网格并添加到场景
+      tubeMesh = new THREE.Mesh(geometry, material);
+      scene.add(tubeMesh);
+
+      // 添加环境光和点光源
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+
+      const pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.set(50, 50, 100);
+      scene.add(pointLight);
+
+      // 获取相机移动路径点
+      tubePoints = path.getSpacedPoints(1000);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // 相机沿曲线路径前进
+      if (i < tubePoints.length - 1) {
+        camera.position.copy(tubePoints[i]);
+        camera.lookAt(tubePoints[i + 1]);
+        i += 1;
+      } else {
+        i = 0; // 循环动画
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // 支持按键快速跳跃
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'ArrowDown') {
+        i += 10;
+      }
+    });
+
+    // 监听窗口变化自适应
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
