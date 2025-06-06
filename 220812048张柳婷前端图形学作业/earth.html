@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Three.js 旋转地球仪</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000;
+        }
+        canvas { 
+            display: block; 
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // 初始化场景、相机和渲染器
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 添加轨道控制器
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // 创建地球
+        const geometry = new THREE.SphereGeometry(5, 64, 64);
+        const textureLoader = new THREE.TextureLoader();
+        const material = new THREE.MeshPhongMaterial({
+            map: textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'),
+            bumpMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
+            bumpScale: 0.05,
+            specularMap: textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg'),
+            specular: new THREE.Color('grey')
+        });
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+
+        // 添加光源
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 3, 5);
+        scene.add(directionalLight);
+
+        // 设置相机位置
+        camera.position.z = 15;
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            earth.rotation.y += 0.002;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Three.js 随机山脉地形</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000;
+        }
+        canvas { 
+            display: block; 
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // 初始化场景、相机和渲染器
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 添加轨道控制器
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // 创建随机地形
+        const terrainSize = 50;
+        const terrainSegments = 100;
+        
+        const geometry = new THREE.PlaneGeometry(terrainSize, terrainSize, terrainSegments, terrainSegments);
+        
+        // 使用噪声算法生成高度
+        const vertices = geometry.attributes.position;
+        for (let i = 0; i < vertices.count; i++) {
+            const x = vertices.getX(i);
+            const y = vertices.getY(i);
+            
+            // 使用简单的数学噪声替代
+            function noise(x, y) {
+                return Math.sin(x * 0.1) * Math.cos(y * 0.1) * 0.5 + 0.5;
+            }
+            
+            // 使用多层噪声叠加
+            let height = noise(x * 0.05, y * 0.05) * 2;
+            height += noise(x * 0.1, y * 0.1) * 1;
+            height += noise(x * 0.2, y * 0.2) * 0.5;
+            
+            vertices.setZ(i, height * 5 - 5); // 调整高度基准
+        }
+        
+        // 更新法线
+        geometry.computeVertexNormals();
+        
+        // 创建材质
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x3a5f0b,
+            wireframe: false,
+            flatShading: true,
+            side: THREE.DoubleSide
+        });
+        
+        const terrain = new THREE.Mesh(geometry, material);
+        terrain.rotation.x = -Math.PI / 2;
+        scene.add(terrain);
+
+        // 添加光源
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+
+        // 设置相机位置
+        camera.position.set(0, 20, 30);
+        camera.lookAt(0, 0, 0);
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
