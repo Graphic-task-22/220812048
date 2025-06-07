@@ -20,7 +20,7 @@
 ## 项目结构
 
 ```
-/threejs-tunnel
+/my-three-app2
   |-- index.html
   |-- main.css
   |-- script.js
