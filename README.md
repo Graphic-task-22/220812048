@@ -1,21 +1,10 @@
-# Three.js 3D房屋项目
+# Three.js 项目
 
 ## 项目简介
 
-本项目基于 [Vite](https://vitejs.dev/) 和 [Three.js](https://threejs.org/) 实现了一个简单的3D房屋场景。通过现代的模块化开发方式，使用 ES 模块导入 Three.js，实现了3D模型的创建、场景布置和交互控制。
+本项目基于 [Vite](https://vitejs.dev/) 和 [Three.js](https://threejs.org/) 实现场景。通过现代的模块化开发方式，使用 ES 模块导入 Three.js，实现了3D模型的创建、场景布置和交互控制。
 
----
 
-## 目录结构
-
-```
-my-three-app4/
-├── index.html         # 主页面文件，包含基本的HTML结构及Three.js的引入。
-├── house.js            # 主要的JavaScript逻辑处理文件，包括场景初始化、3D模型加载和交互控制等。
-└── style.css          # CSS样式文件，用于美化网页界面。
-```
-
----
 
 ## 技术栈
 
@@ -33,7 +22,7 @@ my-three-app4/
 
 2. 进入项目目录并安装依赖:
    ```bash
-   cd threejs-house
+   cd 
    npm install
    ```
 
