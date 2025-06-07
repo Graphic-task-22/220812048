@@ -12,7 +12,7 @@
 >>>>>>> ## 目录结构
 
 ```
-my-three-app4/
+my-three-app/
 ├── index.html         # 主页面文件，包含基本的HTML结构及Three.js的引入。
 ├── house.js            # 主要的JavaScript逻辑处理文件，包括场景初始化、3D模型加载和交互控制等。
 └── style.css          # CSS样式文件，用于美化网页界面。
@@ -36,7 +36,7 @@ my-three-app4/
 
 2. 进入项目目录并安装依赖:
    ```bash
-   cd threejs-house
+   cd my-three-app
    npm install
    ```
 
