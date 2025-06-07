@@ -17,7 +17,7 @@
 
 1. 克隆仓库到本地:
    ```bash
-   git clone https://github.com/yourusername/threejs-house.git
+   git clone https://github.com/Graphic-task-22/220812048.git
    
    ```
 
