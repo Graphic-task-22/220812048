@@ -18,6 +18,7 @@
 1. 克隆仓库到本地:
    ```bash
    git clone https://github.com/yourusername/threejs-house.git
+   
    ```
 
 2. 进入项目目录并安装依赖:
